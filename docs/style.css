@@ -4,63 +4,145 @@
 
 body {
     margin: 0;
-    background: #222;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    background: #222;
     font-family: Arial, sans-serif;
 }
 
 .game {
-    width: 800px;
-    height: 400px;
-    background: #70c5ff;
     position: relative;
+    width: 800px;
+    height: 450px;
     overflow: hidden;
+    background: linear-gradient(#67c9ff, #b9edff);
+    border: 4px solid #111;
+}
+
+.score {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    z-index: 10;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .player {
-    width: 35px;
-    height: 45px;
+    position: absolute;
+    width: 32px;
+    height: 42px;
+    left: 70px;
+    top: 358px;
     background: red;
-    position: absolute;
-    left: 80px;
-    bottom: 50px;
-}
-
-.ground {
-    width: 100%;
-    height: 50px;
-    background: #45a049;
-    position: absolute;
-    bottom: 0;
+    border: 3px solid #222;
+    border-radius: 5px;
+    z-index: 5;
 }
 
 .platform {
-    width: 120px;
+    position: absolute;
     height: 20px;
     background: #8b4513;
-    position: absolute;
+    border-top: 5px solid #45a049;
+}
+
+.platform1 {
+    width: 140px;
+    left: 180px;
     bottom: 130px;
-    left: 300px;
+}
+
+.platform2 {
+    width: 140px;
+    left: 400px;
+    bottom: 210px;
+}
+
+.platform3 {
+    width: 140px;
+    left: 620px;
+    bottom: 130px;
+}
+
+.ground {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    background: #45a049;
+    border-top: 6px solid #287a2d;
 }
 
 .coin {
-    width: 25px;
-    height: 25px;
-    background: gold;
-    border-radius: 50%;
     position: absolute;
-    bottom: 170px;
-    left: 340px;
+    width: 24px;
+    height: 24px;
+    background: gold;
+    border: 3px solid #c99d00;
+    border-radius: 50%;
+    z-index: 3;
+}
+
+#coin1 {
+    left: 230px;
+    bottom: 165px;
+}
+
+#coin2 {
+    left: 450px;
+    bottom: 245px;
+}
+
+#coin3 {
+    left: 670px;
+    bottom: 165px;
 }
 
 .enemy {
-    width: 35px;
-    height: 35px;
-    background: brown;
     position: absolute;
+    width: 36px;
+    height: 36px;
+    left: 540px;
     bottom: 50px;
-    left: 550px;
+    background: brown;
+    border: 3px solid #542600;
+    border-radius: 10px 10px 5px 5px;
+    z-index: 4;
+}
+
+.message {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+}
+
+.message h2 {
+    font-size: 40px;
+}
+
+.message button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 6px;
+    background: #ffca28;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
 }

@@ -9,58 +9,257 @@
 <body>
 
 <div class="game">
-    <div class="player" id="player"></div>
-    <div class="platform"></div>
-    <div class="coin" id="coin"></div>
-    <div class="enemy"></div>
+    <div class="score">Coins: <span id="score">0</span></div>
+
+    <div id="player" class="player"></div>
+
+    <div class="platform platform1"></div>
+    <div class="platform platform2"></div>
+    <div class="platform platform3"></div>
+
+    <div id="coin1" class="coin"></div>
+    <div id="coin2" class="coin"></div>
+    <div id="coin3" class="coin"></div>
+
+    <div id="enemy" class="enemy"></div>
+
     <div class="ground"></div>
+
+    <div id="message" class="message hidden">
+        <h2 id="messageText"></h2>
+        <button id="restart">Restart</button>
+    </div>
 </div>
 
 <script>
     const player = document.getElementById("player");
-    const coin = document.getElementById("coin");
     const enemy = document.getElementById("enemy");
+    const scoreText = document.getElementById("score");
+    const message = document.getElementById("message");
+    const messageText = document.getElementById("messageText");
+    const restartButton = document.getElementById("restart");
 
-    let x = 80;
-    let y = 305;
-    let velocity = 0;
+    const coins = [
+        document.getElementById("coin1"),
+        document.getElementById("coin2"),
+        document.getElementById("coin3")
+    ];
+
+    let playerX = 70;
+    let playerY = 358;
+    let velocityY = 0;
+
+    let left = false;
+    let right = false;
     let jumping = false;
 
-    document.addEventListener("keydown", function(e) {
-        if (e.key === "ArrowRight") {
-            x += 10;
+    let enemyX = 540;
+    let enemyDirection = 1;
+
+    let score = 0;
+    let gameRunning = true;
+
+    const gravity = 0.7;
+    const jumpPower = -13;
+    const speed = 5;
+
+    const platforms = [
+        { x: 180, y: 300, width: 140, height: 20 },
+        { x: 400, y: 220, width: 140, height: 20 },
+        { x: 620, y: 300, width: 140, height: 20 },
+        { x: 0, y: 400, width: 800, height: 50 }
+    ];
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "ArrowLeft") {
+            left = true;
         }
 
-        if (e.key === "ArrowLeft") {
-            x -= 10;
+        if (event.key === "ArrowRight") {
+            right = true;
         }
 
-        if (e.key === " " && !jumping) {
-            velocity = -15;
+        if (event.key === " " && !jumping) {
+            velocityY = jumpPower;
             jumping = true;
         }
     });
 
-    function gameLoop() {
-        velocity += 1;
-        y += velocity;
+    document.addEventListener("keyup", function(event) {
 
-        if (y >= 305) {
-            y = 305;
-            velocity = 0;
-            jumping = false;
+        if (event.key === "ArrowLeft") {
+            left = false;
         }
 
-        if (x < 0) x = 0;
-        if (x > 765) x = 765;
+        if (event.key === "ArrowRight") {
+            right = false;
+        }
+    });
 
-        player.style.left = x + "px";
-        player.style.bottom = (400 - y - 45) + "px";
+    restartButton.addEventListener("click", restart);
+
+    function update() {
+
+        if (!gameRunning) {
+            return;
+        }
+
+        if (left) {
+            playerX -= speed;
+        }
+
+        if (right) {
+            playerX += speed;
+        }
+
+        playerX = Math.max(0, Math.min(768, playerX));
+
+        const oldY = playerY;
+
+        velocityY += gravity;
+        playerY += velocityY;
+
+        jumping = true;
+
+        for (const platform of platforms) {
+
+            const playerBottom = playerY + 42;
+            const oldBottom = oldY + 42;
+
+            const insideX =
+                playerX + 32 > platform.x &&
+                playerX < platform.x + platform.width;
+
+            const landing =
+                oldBottom <= platform.y &&
+                playerBottom >= platform.y &&
+                velocityY >= 0;
+
+            if (insideX && landing) {
+                playerY = platform.y - 42;
+                velocityY = 0;
+                jumping = false;
+            }
+        }
+
+        enemyX += enemyDirection * 2;
+
+        if (enemyX <= 480 || enemyX >= 650) {
+            enemyDirection *= -1;
+        }
+
+        collectCoins();
+        checkEnemy();
+
+        if (playerY > 450) {
+            lose();
+        }
+
+        player.style.left = playerX + "px";
+        player.style.top = playerY + "px";
+
+        enemy.style.left = enemyX + "px";
+    }
+
+    function collectCoins() {
+
+        const playerRect = player.getBoundingClientRect();
+
+        coins.forEach(function(coin) {
+
+            if (coin.style.display === "none") {
+                return;
+            }
+
+            const coinRect = coin.getBoundingClientRect();
+
+            if (isColliding(playerRect, coinRect)) {
+
+                coin.style.display = "none";
+
+                score++;
+                scoreText.textContent = score;
+
+                if (score === coins.length) {
+                    win();
+                }
+            }
+        });
+    }
+
+    function checkEnemy() {
+
+        const playerRect = player.getBoundingClientRect();
+        const enemyRect = enemy.getBoundingClientRect();
+
+        if (isColliding(playerRect, enemyRect)) {
+            lose();
+        }
+    }
+
+    function isColliding(a, b) {
+
+        return (
+            a.left < b.right &&
+            a.right > b.left &&
+            a.top < b.bottom &&
+            a.bottom > b.top
+        );
+    }
+
+    function win() {
+
+        gameRunning = false;
+
+        messageText.textContent = "You Win!";
+
+        message.classList.remove("hidden");
+    }
+
+    function lose() {
+
+        gameRunning = false;
+
+        messageText.textContent = "Game Over";
+
+        message.classList.remove("hidden");
+    }
+
+    function restart() {
+
+        playerX = 70;
+        playerY = 358;
+
+        velocityY = 0;
+
+        jumping = false;
+
+        enemyX = 540;
+        enemyDirection = 1;
+
+        score = 0;
+
+        scoreText.textContent = "0";
+
+        coins.forEach(function(coin) {
+            coin.style.display = "block";
+        });
+
+        message.classList.add("hidden");
+
+        gameRunning = true;
+    }
+
+    function gameLoop() {
+
+        update();
 
         requestAnimationFrame(gameLoop);
     }
 
     gameLoop();
 </script>
+
 </body>
 </html>
