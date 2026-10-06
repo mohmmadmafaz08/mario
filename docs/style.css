@@ -1,0 +1,66 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.game {
+    width: 800px;
+    height: 400px;
+    background: #70c5ff;
+    position: relative;
+    overflow: hidden;
+}
+
+.player {
+    width: 35px;
+    height: 45px;
+    background: red;
+    position: absolute;
+    left: 80px;
+    bottom: 50px;
+}
+
+.ground {
+    width: 100%;
+    height: 50px;
+    background: #45a049;
+    position: absolute;
+    bottom: 0;
+}
+
+.platform {
+    width: 120px;
+    height: 20px;
+    background: #8b4513;
+    position: absolute;
+    bottom: 130px;
+    left: 300px;
+}
+
+.coin {
+    width: 25px;
+    height: 25px;
+    background: gold;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 170px;
+    left: 340px;
+}
+
+.enemy {
+    width: 35px;
+    height: 35px;
+    background: brown;
+    position: absolute;
+    bottom: 50px;
+    left: 550px;
+}

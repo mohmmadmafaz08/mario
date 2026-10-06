@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Mario</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="game">
+    <div class="player" id="player"></div>
+    <div class="platform"></div>
+    <div class="coin" id="coin"></div>
+    <div class="enemy"></div>
+    <div class="ground"></div>
+</div>
+
+<script>
+    const player = document.getElementById("player");
+    const coin = document.getElementById("coin");
+    const enemy = document.getElementById("enemy");
+
+    let x = 80;
+    let y = 305;
+    let velocity = 0;
+    let jumping = false;
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "ArrowRight") {
+            x += 10;
+        }
+
+        if (e.key === "ArrowLeft") {
+            x -= 10;
+        }
+
+        if (e.key === " " && !jumping) {
+            velocity = -15;
+            jumping = true;
+        }
+    });
+
+    function gameLoop() {
+        velocity += 1;
+        y += velocity;
+
+        if (y >= 305) {
+            y = 305;
+            velocity = 0;
+            jumping = false;
+        }
+
+        if (x < 0) x = 0;
+        if (x > 765) x = 765;
+
+        player.style.left = x + "px";
+        player.style.bottom = (400 - y - 45) + "px";
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+</script>
+</body>
+</html>
